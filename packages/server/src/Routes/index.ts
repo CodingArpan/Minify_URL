@@ -2,6 +2,7 @@ import { Express, Request, Response } from "express";
 import buildMiniUrl from './miniurl.build'
 import redirection from "../Controllers/redirect.controller";
 import urlredirect from './url.redirect'
+import authenticate from './user.auth'
 
 
 
@@ -21,6 +22,7 @@ const routes = (app: Express): void => {
 
     app.use('/redirect', urlredirect)
 
+    app.use('/auth', authenticate)
 
 
     app.all('*', (req: Request, res: Response): Response => {
