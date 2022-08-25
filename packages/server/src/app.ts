@@ -7,7 +7,7 @@ import db from './DB/DB'
 
 
 const app = express();
-const PORT: string | 4000 = process.env.PORT || 4000;
+const PORT: string | 5000 = process.env.PORT || 5000;
 const DB_URL: string | any = process.env.DATABASE_URL;
 
 
