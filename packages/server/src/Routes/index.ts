@@ -1,4 +1,5 @@
 import { Express, Request, Response } from "express";
+import cors from "cors";
 import buildMiniUrl from './miniurl.build'
 import redirection from "../Controllers/redirect.controller";
 import urlredirect from './url.redirect'
@@ -6,7 +7,7 @@ import authenticate from './user.auth'
 
 
 
-const routes = (app: Express): void => {
+const routes = <T>(app: Express,corsOptions:T): void => {
 
     app.get('/checkup', (req: Request, res: Response): Response => {
         return res.send('App is Healthy')
@@ -17,6 +18,8 @@ const routes = (app: Express): void => {
     })
 
     app.get('/:redirectid', redirection.handelRedirect)
+
+    app.use(cors(corsOptions)) // restrict access to other than client side
 
     app.use('/url', buildMiniUrl)
 

@@ -18,7 +18,8 @@ class miniurl {
                     if (keyword) {
                         const keystatus: boolean = await utility.checkavailablity(keyword);
                         if (keystatus) {
-                            return res.status(400).json({
+                            return res.status(200).json({
+                                request: 'failed',
                                 status: false,
                                 message: 'keyword already in use, please try another'
                             })
@@ -28,7 +29,8 @@ class miniurl {
                         }
 
                     } else {
-                        return res.status(400).json({
+                        return res.status(200).json({
+                            request: 'failed',
                             status: false,
                             message: 'keyword not found'
                         })

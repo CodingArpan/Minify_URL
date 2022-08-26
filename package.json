@@ -8,8 +8,7 @@
     "lerna": "^5.4.3"
   },
   "scripts": {
-    "dev":"lerna run dev",
-    "test":"lerna run test"
+    "dev": "lerna run dev",
+    "test": "lerna run test"
   }
-
 }
