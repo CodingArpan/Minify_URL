@@ -41,7 +41,10 @@ const Header = (): JSX.Element => {
   return (
     <div className="bg-[#615efd] pb-10">
       <Navbar />
-      <div className="system w-full m-auto max-w-5xl px-10 space-y-12 my-10 mt-20 relative">
+      <form
+        id="minifyreq"
+        className="system w-full m-auto max-w-5xl px-10 space-y-12 my-10 mt-20 relative"
+      >
         <Urlinput
           setActivateBtn={setActivateBtn}
           ActivateBtn={ActivateBtn}
@@ -54,7 +57,7 @@ const Header = (): JSX.Element => {
           setData={setData}
           Data={Data}
         />
-      </div>
+      </form>
     </div>
   );
 };
@@ -64,10 +67,13 @@ export default Header;
 const Urlinput = (props: Props): JSX.Element => {
   let { setActivateBtn, ActivateBtn, setData, Data } = props;
   const [ValidURL, setValidURL] = useState<boolean>(true);
-  const [MinifiedURL, setMinifiedURL] = useState<string>("");
+  const [MinifiedURL, setMinifiedURL] = useState<boolean>(false);
 
-  const request_minified_url = async () => {
-    fetch(`http://localhost:5000/url/short`, {
+  const request_minified_url = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    fetch(`http://localhost:4000/url/short`, {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -78,14 +84,63 @@ const Urlinput = (props: Props): JSX.Element => {
       .then(async (response) => {
         const result = await response.json();
         if (result.request === "successfull") {
-          setMinifiedURL("http://localhost:5000/" + result.keyword);
+          setActivateBtn(false);
+          const minifyreq = document.getElementById(
+            "minifyreq"
+          ) as HTMLFormElement | null;
+          minifyreq!.reset();
+          setMinifiedURL(true);
+          const minifiedurl = "http://localhost:4000/" + result.keyword;
+          const url_input = document.getElementById(
+            "destination"
+          ) as HTMLInputElement | null;
+          url_input!.value = minifiedurl;
         } else if (result.request === "failed") {
           alert(result.message);
+          const check = document.getElementById("modal") as HTMLInputElement;
+          check.click();
         }
       })
       .catch((error) => {
         console.log(error.message);
       });
+  };
+
+  const copy_minified_url = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    const url_input = document.getElementById(
+      "destination"
+    ) as HTMLInputElement | null;
+
+    const target = e.target as HTMLElement;
+
+    navigator.clipboard.writeText(url_input!.value).then(() => {
+      target.innerHTML = "copied!";
+      setTimeout(() => {
+        target.innerHTML = "copy";
+      }, 400);
+    });
+  };
+
+  const resetAll = () => {
+    setActivateBtn(false);
+    setValidURL(true);
+    setMinifiedURL(false);
+    setData({
+      destination: "",
+      custom: false,
+      keyword: "",
+      secure: false,
+      password: "",
+      login: false,
+      userid: "",
+      track: false,
+    });
+    const minifyreq = document.getElementById(
+      "minifyreq"
+    ) as HTMLFormElement | null;
+    minifyreq!.reset();
   };
 
   const paste = async (
@@ -136,29 +191,62 @@ const Urlinput = (props: Props): JSX.Element => {
       >
         <input
           onBlur={(e: React.ChangeEvent<HTMLInputElement>) => {
-            checkinputval(e);
+            !MinifiedURL ? checkinputval(e) : "";
           }}
           onFocus={(e: React.FocusEvent<HTMLInputElement, Element>): void => {
-            paste(e);
+            !MinifiedURL ? paste(e) : "";
           }}
-          className="text-white text-lg px-5 font-semibold w-full bg-transparent rounded-full outline-none border-none placeholder:text-slate-300 tracking-wider"
+          className="text-white text-lg px-3 mr-2 font-semibold w-full bg-transparent rounded-full outline-none border-none placeholder:text-slate-300 tracking-wider"
           type="text"
-          defaultValue={MinifiedURL}
           name="destination"
           id="destination"
           placeholder="https://example.com/*"
         />
-        <button
-          onClick={(): void => {
-            request_minified_url();
-          }}
-          className={`minifybtn font-semibold text-lg capitalize px-10 py-1  ${
-            ActivateBtn ? "bg-white text-black" : "bg-gray-300 text-gray-600"
-          } rounded-full cursor-pointer`}
-        >
-          minify
-        </button>
-        {/* <div className="minifybtn font-semibold text-lg capitalize px-10 py-1 bg-white rounded-full cursor-pointer">copy</div> */}
+        {!MinifiedURL && (
+          <button
+            onClick={(
+              e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+            ): void => {
+              e.preventDefault();
+              ActivateBtn ? request_minified_url(e) : "";
+            }}
+            className={`minifybtn font-semibold text-base capitalize px-10 py-1  ${
+              ActivateBtn
+                ? "bg-white text-black hover:scale-105 active:scale-90"
+                : "bg-gray-300 text-gray-600"
+            } rounded-full cursor-pointer  transition-all ease-in-out duration-200 `}
+          >
+            minify
+          </button>
+        )}
+        {MinifiedURL && (
+          <div className="flex flex-row space-x-5">
+            <button
+              onClick={(
+                e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+              ): void => {
+                e.preventDefault();
+                resetAll();
+              }}
+              className={`minifybtn font-semibold text-base capitalize px-10 py-1 bg-white text-black hover:scale-105 active:scale-90
+               rounded-full cursor-pointer  transition-all ease-in-out duration-200 `}
+            >
+              clear
+            </button>
+
+            <button
+              onClick={(
+                e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+              ): void => {
+                e.preventDefault();
+                copy_minified_url(e);
+              }}
+              className={`minifybtn font-normal w-max text-base capitalize px-10 py-1 bg-slate-700 hover:bg-slate-800 text-white rounded-full cursor-pointer hover:scale-105 active:scale-90 transition-all ease-in-out duration-200 `}
+            >
+              copy
+            </button>
+          </div>
+        )}
       </div>
     </>
   );
@@ -286,6 +374,7 @@ const Minifyoptions = (props: Props): JSX.Element => {
 const Form = (props: PropsModal): JSX.Element => {
   let { Modal, setModal, setData } = props;
   const [Showpas, setShowpas] = useState<boolean>(false);
+  const [Keyword, setKeyword] = useState<boolean>(false);
 
   const datachanged = (name: string, value: string | boolean): void => {
     setData((val): Dataset => {
@@ -309,6 +398,42 @@ const Form = (props: PropsModal): JSX.Element => {
         break;
     }
   };
+
+  const checkkeyword = (keyword: string) => {
+    if (keyword.length >= 4) {
+      fetch(`http://localhost:4000/url/avail/${keyword}`, {
+        method: "GET",
+      })
+        .then(async (res) => {
+          const result = await res.json();
+          if (result.useable) {
+            setKeyword(true);
+            datachanged("keyword", keyword);
+          } else {
+            setKeyword(false);
+            datachanged("keyword", "");
+          }
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    } else {
+      setKeyword(false);
+      datachanged("keyword", "");
+    }
+  };
+
+  const debounce = (fn: (keyword: string) => void, delay: number) => {
+    let timer: NodeJS.Timeout;
+    return (word: string) => {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => {
+        fn(word);
+      }, delay);
+    };
+  };
+
+  const smartfunc = debounce(checkkeyword, 300);
 
   return (
     <div
@@ -367,14 +492,20 @@ const Form = (props: PropsModal): JSX.Element => {
 
         <input
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            datachanged(e.target.name, e.target.value);
+            smartfunc(e.target.value);
           }}
-          className="w-full  border border-1 py-2 px-4 rounded-full text-lg font-normal text-gray-800 bg-blue-50 outline-none"
+          className="w-full  border border-1 py-2 px-4 rounded-full text-lg font-normal text-gray-800 bg-blue-50 outline-none select-all"
           type="text"
           name="keyword"
           id="keyword"
           placeholder="Enter Your Keyword"
         />
+        {!Keyword && (
+          <p className="text-rose-500 px-4">Keyword is unavailable 🚫</p>
+        )}
+        {Keyword && (
+          <p className="text-green-500 px-4">Keyword is available ✅</p>
+        )}
       </div>
       <div className="flex flex-row justify-evenly items-center space-x-10">
         <div className=" flex justify-center items-center">
@@ -426,3 +557,5 @@ const Form = (props: PropsModal): JSX.Element => {
 const ErrorAlert = (): JSX.Element => {
   return <></>;
 };
+
+// Error Alert
