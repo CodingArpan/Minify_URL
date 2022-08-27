@@ -6,13 +6,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Redirecting...</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <% if (security) {%>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <% } %>
 
-    <style>
-        .data {
-            display: none;
-        }
-    </style>
+
+            <style>
+                .data {
+                    display: none;
+                }
+            </style>
 </head>
 
 <body>
@@ -178,47 +181,48 @@
                 </div>
             </form>
         </div>
+
+
+        <script type='text/javascript'>
+            let local_URL = '<%= baseurl %>';
+            document.getElementById('loginform').addEventListener('click', async (e) => {
+                e.preventDefault();
+                const securecode = document.getElementById('pass').value;
+                const pathid = document.getElementById('pathid').value;
+                const refid = document.getElementById('refid').value;
+                const inputdata = new RegExp(/[a-zA-Z0-9]{6,}/g).test(securecode)
+                if (inputdata) {
+
+                    const res = await fetch(`${local_URL}/redirect/protection`, {
+                        method: 'POST',
+                        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json; charset=utf-8' },
+                        body: JSON.stringify({
+                            securecode,
+                            pathid,
+                            refid
+                        })
+                    })
+
+                    const data = await res.json();
+
+                    if (data.authentication === 'successfull' && data.destination) {
+                        window.location.replace(data.destination);
+                    } else {
+                        const incorrect = document.querySelector('.incorrect')
+                        incorrect.style.display = 'block';
+                        document.querySelector('.wrongpass').style.display = 'none';
+                        document.getElementById('pass').value = ''
+                    }
+                } else {
+                    document.querySelector('.wrongpass').style.display = 'block';
+                    document.querySelector('.incorrect').style.display = 'none';
+                }
+
+
+            })
+        </script>
         <% } %>
 
-
-            <script type='text/javascript'>
-                let local_URL = '<%= baseurl %>';
-                document.getElementById('loginform').addEventListener('click', async (e) => {
-                    e.preventDefault();
-                    const securecode = document.getElementById('pass').value;
-                    const pathid = document.getElementById('pathid').value;
-                    const refid = document.getElementById('refid').value;
-                    const inputdata = new RegExp(/[a-zA-Z0-9]{6,}/g).test(securecode)
-                    if (inputdata) {
-
-                        const res = await fetch(`${local_URL}/redirect/protection`, {
-                            method: 'POST',
-                            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json; charset=utf-8' },
-                            body: JSON.stringify({
-                                securecode,
-                                pathid,
-                                refid
-                            })
-                        })
-
-                        const data = await res.json();
-
-                        if (data.authentication === 'successfull' && data.destination) {
-                            window.location.replace(data.destination);
-                        } else {
-                            const incorrect = document.querySelector('.incorrect')
-                            incorrect.style.display = 'block';
-                            document.querySelector('.wrongpass').style.display = 'none';
-                            document.getElementById('pass').value = ''
-                        }
-                    } else {
-                        document.querySelector('.wrongpass').style.display = 'block';
-                        document.querySelector('.incorrect').style.display = 'none';
-                    }
-
-
-                })
-            </script>
 
             <script type='text/javascript'>
                 local_URL = '<%= baseurl %>';
@@ -273,7 +277,7 @@
                         userdetails.pathid = data.id;
                         userdetails.refid = data.ref;
 
-                        const request = await fetch(`${local_URL}/redirect/data`, {
+                        const response = await fetch(`${local_URL}/redirect/data`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -281,18 +285,20 @@
                             body: JSON.stringify(userdetails)
                         })
 
-                        const response = await request.json();
-                        return response;
+                        const finalres = await response.json();
+
+                        console.log(finalres)
+                        if (finalres.request && data.secure === 'false') {
+                            window.location.replace(data.url);
+                        }
+                        // return response;
 
 
 
                     }
 
-                    const finalres = await sendanalytics();
-                    console.log(finalres)
-                    if (finalres.request && data.secure === 'false') {
-                        window.location.replace(data.url);
-                    }
+                    sendanalytics();
+
 
                 } catch (err) {
                     console.log(err)

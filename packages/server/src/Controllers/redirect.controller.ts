@@ -37,6 +37,7 @@ class redirection {
             } else {
                 return res.render('LinkExpired');
             }
+            
         } catch (err) {
             return res.render('LinkExpired');
 

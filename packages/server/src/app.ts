@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: false }));
 app.set("views", path.join(__dirname, "views"));
 app.set('view engine', 'ejs');
 
-const whitelistorigins: string[] = ['http://localhost:3000']
+const whitelistorigins: string[] = ['http://localhost:3000','http://localhost:4000']
 
 interface corsOptionsType {
     origin: (string | boolean | RegExp | (RegExp | string)[] | ((origin: string, callback: () => void) => void));
