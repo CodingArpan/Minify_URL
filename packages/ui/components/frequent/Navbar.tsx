@@ -13,7 +13,7 @@ import React from "react";
             <div className="extra cursor-pointer md:relative p-2 group ">
               <input className="peer hidden" type="checkbox" id="menu" />
 
-              <label htmlFor="menu" className="block peer-checked:hidden cursor-pointer">
+              <label htmlFor="menu" className="block mob_tab:peer-checked:hidden cursor-pointer">
                 <svg
                   className="w-5 h-5"
                   viewBox="0 0 29 29"
@@ -27,7 +27,7 @@ import React from "react";
                 </svg>
               </label>
 
-              <label htmlFor="menu" className="hidden peer-checked:block ">
+              <label htmlFor="menu" className="hidden mob_tab:peer-checked:block ">
                 <svg
                   className="w-5 h-5"
                   xmlns="http://www.w3.org/2000/svg"
@@ -40,7 +40,7 @@ import React from "react";
                 </svg>
               </label>
 
-              <div className="list absolute overflow-auto  w-[80%] md:w-max right-5 text-black  mt-8 bg-white py-5 rounded-md top-40 opacity-0 invisible peer-checked:opacity-100  peer-checked:visible peer-checked:top-7 md:top-20 md:-left-10 md:group-hover:top-5 md:group-hover:opacity-100 md:group-hover:visible transition-all ease-in-out duration-300 shadow-xl">
+              <div className="list absolute z-50 overflow-auto  w-[80%] md:w-max right-5 text-black  mt-8 bg-white py-5 rounded-md top-40 opacity-0 invisible mob_tab:peer-checked:opacity-100  mob_tab:peer-checked:visible mob_tab:peer-checked:top-7 md:top-20 md:-left-10 md:group-hover:top-5 md:group-hover:opacity-100 md:group-hover:visible transition-all ease-in-out duration-300 shadow-xl">
                 <div className="">
                   <div className="py-3 px-5 hover:bg-[#e9ecef] hover:text-blue-600 transition-all ease-in-out duration-200">
                     OptionOptionOptionOption
