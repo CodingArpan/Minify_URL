@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: false }));
 app.set("views", path.join(__dirname, "views"));
 app.set('view engine', 'ejs');
 
-const whitelistorigins: string[] = ['http://localhost:3000','http://localhost:4000']
+const whitelistorigins: string | string[] = process.env.WHITELISTORIGINS || ['http://localhost:1000', 'http://localhost:1000']
 
 interface corsOptionsType {
     origin: (string | boolean | RegExp | (RegExp | string)[] | ((origin: string, callback: () => void) => void));
@@ -28,15 +28,16 @@ interface corsOptionsType {
 }
 
 const corsOptions = {
-    // origin:whitelistorigins,
-    origin: (origin: string, callback: (arg0: string | null, arg1: boolean | undefined) => void) => {
-        if (whitelistorigins.indexOf(origin) !== -1 && origin) {
-            callback(null, true)
-        } else {
-            callback('You Dont Have Enough Permission to Access !!', false)
+    origin:'*',
+    // origin: (origin: string, callback: (arg0: string | null, arg1: boolean | undefined) => void) => {
+    //     console.log(origin,'--------------------------------')
+    //     if (whitelistorigins.indexOf(origin) !== -1 && origin) {
+    //         callback(null, true)
+    //     } else {
+    //         callback('You Dont Have Enough Permission to Access !!', false)
 
-        }
-    },
+    //     }
+    // },
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type'],
     credentials: true,

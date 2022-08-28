@@ -5,6 +5,8 @@ const router = express.Router();
 
 router.post('/data', validation.userredirectdata, redirection.redirectdatacollection)
 
+router.post('/pathid', redirection.handelRedirect)
+
 router.post('/protection', redirection.redirectpasswordvalidation)
 
 export default router;

@@ -17,7 +17,7 @@ const routes = <T>(app: Express,corsOptions:T): void => {
         return res.send('App is Healthy')
     })
 
-    app.get('/:redirectid', redirection.handelRedirect)
+    // app.get('/:redirectid', redirection.handelRedirect)
 
     app.use(cors(corsOptions)) // restrict access to other than client side
 

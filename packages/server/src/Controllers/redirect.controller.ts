@@ -5,14 +5,13 @@ import bcrypt from "bcryptjs";
 
 class redirection {
 
-    static handelRedirect = async (req: Request, res: Response): Promise<Response | void> => {
+    static handelRedirect = async (req: Request, res: Response): Promise<Response> => {
         try {
 
 
-            const redirectid: string = req.params.redirectid;
+            const redirectid: string = req.body.pathID;
 
             const data: { destination: string; secure: boolean; _id: string; } | null = await shortUrl.findOne({ keyword: redirectid }).select('destination secure _id');
-
             console.log(data)
 
             if (data) {
@@ -20,32 +19,39 @@ class redirection {
                 let url = data.secure ? 'blank' : data.destination;
 
                 interface datapass {
-                    baseurl?: string;
+                    // baseurl?: string;
                     security: boolean;
                     destination: string;
-                    id: string;
-                    ref: string;
+                    pathid: string;
+                    refid: string;
                 }
+
                 let datapass: datapass = {
-                    baseurl: process.env.LOCAL_URL,
+
                     security: data.secure,
                     destination: url,
-                    id: redirectid,
-                    ref: data._id.toString(),
+                    pathid: redirectid,
+                    refid: data._id.toString(),
                 }
-                return res.render('Collectanalytics', { ...datapass });
+                return res.status(200).json({ ...datapass })
+                // return res.render('Collectanalytics', { ...datapass });
             } else {
-                return res.render('LinkExpired');
+                return res.status(200).json({ refid: '0' })
+
             }
-            
+
         } catch (err) {
-            return res.render('LinkExpired');
+            // return res.render('LinkExpired');
+            console.log(err)
+            return res.status(200).json({ refid: '0', message: 'Internal Server Error' });
+
 
         }
 
     }
 
     static redirectdatacollection = async (req: Request, res: Response): Promise<Response | void> => {
+        console.log(req.body)
         try {
 
 

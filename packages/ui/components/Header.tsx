@@ -90,7 +90,7 @@ const Urlinput = (props: Props): JSX.Element => {
           ) as HTMLFormElement | null;
           minifyreq!.reset();
           setMinifiedURL(true);
-          const minifiedurl = "http://localhost:4000/" + result.keyword;
+          const minifiedurl = `${process.env.NEXT_PUBLIC_UI_URL}/${result.keyword}`
           const url_input = document.getElementById(
             "destination"
           ) as HTMLInputElement | null;

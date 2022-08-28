@@ -35,8 +35,6 @@ export default class utility {
 
         const ID = async (): Promise<string | Error> => {
             try {
-
-
                 // const security = secure ? 'S' : 'NS';
                 const newID = Date.now().toString(36);
                 const find = await shortUrl.find({ keyword: newID })
@@ -51,8 +49,6 @@ export default class utility {
 
         }
         return ID
-
-
     }
 
     static checkEmail = async (email: string): Promise<boolean | Error> => {
