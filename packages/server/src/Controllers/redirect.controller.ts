@@ -51,7 +51,7 @@ class redirection {
     }
 
     static redirectdatacollection = async (req: Request, res: Response): Promise<Response | void> => {
-        console.log(req.body)
+        // console.log(req.body)
         try {
 
 
