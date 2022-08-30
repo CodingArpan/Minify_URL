@@ -1,10 +1,10 @@
 import type { NextPage } from "next";
-import Header from "../components/Header";
+import HeaderIndex from "../components/Header/Header.Index";
 
 const Home: NextPage = (): JSX.Element => {
   return (
     <>
-      <Header/>
+      <HeaderIndex/>
     </>
   );
 };

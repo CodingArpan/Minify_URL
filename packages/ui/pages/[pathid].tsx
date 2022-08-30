@@ -15,6 +15,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const pathID: { pathID: string | string[] } = {
       pathID: context.params.pathid,
     };
+    console.log(pathID,'getStaticProps')
     let info: datapass | { refid: string; message: string };
     try {
       const response: Response = await fetch(
@@ -67,6 +68,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 const Redirectpath = (props: datapass): JSX.Element => {
+
+  console.log(props,'Redirectpath props')
+
+
   const [Input, setInput] = useState<string>("");
   const [Incorrect, setIncorrect] = useState<boolean>(false);
   const [WrongFormat, setWrongFormat] = useState<boolean>(false);
@@ -171,6 +176,8 @@ const Redirectpath = (props: datapass): JSX.Element => {
 
   useEffect(() => {
     try {
+     
+      
       let canvas = document.createElement("canvas") as HTMLCanvasElement;
       let webgl =
         canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
@@ -245,7 +252,7 @@ const Redirectpath = (props: datapass): JSX.Element => {
 
         console.log(finalres);
         if (finalres.request && security === false) {
-          window.location.replace("${destination}");
+          window.location.replace(destination!);
         }
         // return response;
       };
